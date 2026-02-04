@@ -2,80 +2,57 @@ package com.it342.backend.controller;
 
 import com.it342.backend.model.User;
 import com.it342.backend.service.AuthService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.ExecutionException;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")
-@CrossOrigin(origins = "*") // allow frontend
+@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
-
-    // Simple in-memory session storage for lab purposes
-    private final Map<Long, Boolean> sessions = new HashMap<>();
 
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
-    // REGISTER
+    // Register a new user
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
+    public String register(@RequestParam String fullName, @RequestParam String password) {
         try {
-            authService.register(user.getFullName(), user.getPasswordHash());
-            return ResponseEntity.ok("User registered successfully!");
+            authService.register(fullName, password);
+            return "User registered successfully!";
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Error registering user");
+            return "Registration failed: " + e.getMessage();
         }
     }
 
-    // LOGIN
+    // Login a user
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
+    public String login(@RequestParam Long userId, @RequestParam String password) {
         try {
-            boolean success = authService.login(user.getUser_id(), user.getPasswordHash());
+            boolean success = authService.login(userId, password);
             if (success) {
-                sessions.put(user.getUser_id(), true); // mark user as logged in
-                return ResponseEntity.ok("Login successful");
+                User user = authService.getUserById(userId);
+                return "Login successful! Welcome " + user.getFullName() + " (ID: " + user.getId() + ")";
             } else {
-                return ResponseEntity.status(401).body("Invalid credentials");
+                return "Invalid user ID or password.";
             }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Error logging in");
+            return "Login failed: " + e.getMessage();
         }
     }
 
-    // DASHBOARD
-    @GetMapping("/dashboard/{userId}")
-    public ResponseEntity<User> dashboard(@PathVariable Long userId) {
-        if (sessions.getOrDefault(userId, false)) {
-            try {
-                User user = authService.getUserById(userId);
-                if (user != null) {
-                    return ResponseEntity.ok(user);
-                } else {
-                    return ResponseEntity.notFound().build();
-                }
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-                return ResponseEntity.status(500).build();
-            }
-        } else {
-            return ResponseEntity.status(401).build(); // user not logged in
+    // Get user info by ID
+    @GetMapping("/user/{id}")
+    public User getUser(@PathVariable Long id) {
+        try {
+            return authService.getUserById(id);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+            return null;
         }
-    }
-
-    // LOGOUT
-    @PostMapping("/logout/{userId}")
-    public ResponseEntity<String> logout(@PathVariable Long userId) {
-        sessions.remove(userId);
-        return ResponseEntity.ok("Logged out successfully");
     }
 }

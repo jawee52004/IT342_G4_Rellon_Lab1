@@ -14,19 +14,23 @@ public class AuthService {
         this.userService = userService;
     }
 
-    // Register new user
+    // Register a new user
     public void register(String fullName, String password) throws ExecutionException, InterruptedException {
+        // Create a new User object
         User user = new User(fullName, password);
+        // Save user via UserService
         userService.registerUser(user);
     }
 
-    // Login user
+    // Login a user
     public boolean login(Long userId, String password) throws ExecutionException, InterruptedException {
+        // Retrieve user by ID
         User user = userService.getUserById(userId);
+        // Check password match
         return user != null && user.getPasswordHash().equals(password);
     }
 
-    // Get user for dashboard
+    // Get user details
     public User getUserById(Long userId) throws ExecutionException, InterruptedException {
         return userService.getUserById(userId);
     }

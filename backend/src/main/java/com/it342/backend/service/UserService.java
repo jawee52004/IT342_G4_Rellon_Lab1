@@ -1,45 +1,35 @@
 package com.it342.backend.service;
 
 import com.it342.backend.model.User;
-import com.google.firebase.database.*;
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.*;
+import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Service
 public class UserService {
 
-    private final DatabaseReference database;
+    private static final String COLLECTION_NAME = "users";
 
-    public UserService() {
-        this.database = FirebaseDatabase.getInstance().getReference("users");
+    // Register user in Firestore
+    public void registerUser(User user) throws ExecutionException, InterruptedException {
+        Firestore db = FirestoreClient.getFirestore();
+        DocumentReference docRef = db.collection(COLLECTION_NAME).document(String.valueOf(user.getId()));
+        ApiFuture<WriteResult> result = docRef.set(user);
+        result.get(); // wait until done
     }
 
-    // Register user
-    public void registerUser(User user) throws InterruptedException, ExecutionException {
-        DatabaseReference userRef = database.child(String.valueOf(user.getUser_id()));
-        userRef.setValueAsync(user).get(); // synchronous write
-    }
-
-    // Get user by ID
-    public User getUserById(Long userId) throws InterruptedException, ExecutionException {
-        CompletableFuture<User> future = new CompletableFuture<>();
-
-        database.child(String.valueOf(userId)).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-                future.complete(user);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                future.completeExceptionally(new RuntimeException("Firebase error: " + error.getMessage()));
-            }
-        });
-
-        // Wait for the listener to complete
-        return future.get();
+    // Get user by ID from Firestore
+    public User getUserById(Long userId) throws ExecutionException, InterruptedException {
+        Firestore db = FirestoreClient.getFirestore();
+        DocumentReference docRef = db.collection(COLLECTION_NAME).document(String.valueOf(userId));
+        ApiFuture<DocumentSnapshot> future = docRef.get();
+        DocumentSnapshot document = future.get();
+        if (document.exists()) {
+            return document.toObject(User.class);
+        }
+        return null;
     }
 }

@@ -36,3 +36,6 @@ build/
 
 # Firebase service account
 src/main/resources/firebase/serviceAccountKey.json
+
+# Firebase service account
+backend/src/main/resources/firebase/serviceAccountKey.json

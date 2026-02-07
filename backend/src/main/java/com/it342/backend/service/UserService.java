@@ -1,35 +1,26 @@
 package com.it342.backend.service;
 
 import com.it342.backend.model.User;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
+import com.it342.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.ExecutionException;
+import java.util.Optional;
 
 @Service
 public class UserService {
 
-    private static final String COLLECTION_NAME = "users";
+    private final UserRepository userRepository;
 
-    // Register user in Firestore
-    public void registerUser(User user) throws ExecutionException, InterruptedException {
-        Firestore db = FirestoreClient.getFirestore();
-        DocumentReference docRef = db.collection(COLLECTION_NAME).document(String.valueOf(user.getId()));
-        ApiFuture<WriteResult> result = docRef.set(user);
-        result.get(); // wait until done
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    // Get user by ID from Firestore
-    public User getUserById(Long userId) throws ExecutionException, InterruptedException {
-        Firestore db = FirestoreClient.getFirestore();
-        DocumentReference docRef = db.collection(COLLECTION_NAME).document(String.valueOf(userId));
-        ApiFuture<DocumentSnapshot> future = docRef.get();
-        DocumentSnapshot document = future.get();
-        if (document.exists()) {
-            return document.toObject(User.class);
-        }
-        return null;
+    public User registerUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public User getUserById(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        return user.orElse(null);
     }
 }

@@ -15,12 +15,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User registerUser(User user) {
-        return userRepository.save(user);
+    // Register a new user
+    public void registerUser(User user) {
+        userRepository.save(user);
     }
 
-    public User getUserById(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        return user.orElse(null);
+    // Find user by ID
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    // Find user by full name
+    public User getUserByFullName(String fullName) {
+        return userRepository.findByFullName(fullName).orElse(null);
     }
 }

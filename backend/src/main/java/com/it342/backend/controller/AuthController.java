@@ -10,12 +10,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     private final AuthService authService;
-
-    // Simple in-memory session storage (LAB PURPOSE ONLY)
     private final Map<Long, Boolean> sessions = new HashMap<>();
 
     public AuthController(AuthService authService) {
@@ -32,10 +30,12 @@ public class AuthController {
     // LOGIN
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user) {
-        boolean success = authService.login(user.getId(), user.getPasswordHash());
+        boolean success = authService.login(user.getFullName(), user.getPasswordHash());
 
         if (success) {
-            sessions.put(user.getId(), true);
+            // Fetch user to get ID for session storage
+            User loggedInUser = authService.getUserByFullName(user.getFullName());
+            sessions.put(loggedInUser.getId(), true);
             return ResponseEntity.ok("Login successful");
         }
 
@@ -45,17 +45,12 @@ public class AuthController {
     // DASHBOARD
     @GetMapping("/dashboard/{userId}")
     public ResponseEntity<User> dashboard(@PathVariable Long userId) {
-
         if (!sessions.getOrDefault(userId, false)) {
             return ResponseEntity.status(401).build();
         }
 
         User user = authService.getUserById(userId);
-
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
+        if (user == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(user);
     }
 

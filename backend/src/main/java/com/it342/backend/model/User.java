@@ -12,13 +12,15 @@ public class User {
     private Long id;
 
     private String fullName;
+    private String email;           // new field
     private String passwordHash;
     private LocalDateTime createdAt;
 
     public User() {}
 
-    public User(String fullName, String passwordHash) {
+    public User(String fullName, String email, String passwordHash) {
         this.fullName = fullName;
+        this.email = email;
         this.passwordHash = passwordHash;
         this.createdAt = LocalDateTime.now();
     }
@@ -29,6 +31,10 @@ public class User {
 
     public String getFullName() {
         return fullName;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getPasswordHash() {

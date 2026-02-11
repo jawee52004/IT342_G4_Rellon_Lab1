@@ -1,46 +1,30 @@
 'use client';
 
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../components/Profile.css";
 
 function Profile() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState(null);
 
-  // Protect page (redirect if not logged in)
+  // Protect page
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem("user");
-
-      if (!storedUser) {
-        navigate("/", { replace: true });
-        return;
-      }
-
-      const parsedUser = JSON.parse(storedUser);
-
-      // Extra safety check
-      if (!parsedUser?.id) {
-        localStorage.removeItem("user");
-        navigate("/", { replace: true });
-        return;
-      }
-
-      setUser(parsedUser);
-    } catch (error) {
-      console.error("Invalid user data:", error);
-      localStorage.removeItem("user");
-      navigate("/", { replace: true });
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      navigate("/login", { state: { from: location }, replace: true });
+    } else {
+      setUser(JSON.parse(storedUser));
     }
-  }, [navigate]);
+  }, [navigate, location]);
 
   const logout = () => {
     localStorage.removeItem("user");
-    navigate("/", { replace: true }); // prevents back navigation
+    navigate("/login", { replace: true });
   };
 
-  if (!user) return null; // Prevent rendering before validation completes
+  if (!user) return null;
 
   return (
     <div className="profile-root">
@@ -63,14 +47,8 @@ function Profile() {
           <h1 className="profile-header">Profile</h1>
 
           <div className="profile-info">
-            <p>
-              <strong>Full Name:</strong> {user.fullName || "N/A"}
-            </p>
-
-            <p>
-              <strong>Email:</strong> {user.email || "N/A"}
-            </p>
-
+            <p><strong>Full Name:</strong> {user.fullName}</p>
+            <p><strong>Email:</strong> {user.email}</p>
             <p>
               <strong>Account Created:</strong>{" "}
               {user.createdAt

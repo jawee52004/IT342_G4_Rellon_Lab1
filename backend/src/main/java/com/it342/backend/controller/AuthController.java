@@ -23,24 +23,27 @@ public class AuthController {
     // REGISTER
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
-        authService.register(user.getFullName(), user.getPasswordHash());
+        authService.register(user.getFullName(), user.getEmail(), user.getPasswordHash());
         return ResponseEntity.ok("User registered successfully");
     }
 
     // LOGIN
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        boolean success = authService.login(user.getFullName(), user.getPasswordHash());
+    public ResponseEntity<?> login(@RequestBody User user) {
+
+        boolean success = authService.login(user.getEmail(), user.getPasswordHash());
 
         if (success) {
-            // Fetch user to get ID for session storage
-            User loggedInUser = authService.getUserByFullName(user.getFullName());
+            User loggedInUser = authService.getUserByEmail(user.getEmail());
+
             sessions.put(loggedInUser.getId(), true);
-            return ResponseEntity.ok("Login successful");
+
+            return ResponseEntity.ok(loggedInUser); // ✅ return full user object
         }
 
         return ResponseEntity.status(401).body("Invalid credentials");
     }
+
 
     // DASHBOARD
     @GetMapping("/dashboard/{userId}")

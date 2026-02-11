@@ -1,25 +1,34 @@
-import { useNavigate, Link } from "react-router-dom";
-import { useEffect } from "react";
+'use client';
+
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "../components/Dashboard.css";
 
 function Dashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [user, setUser] = useState(null);
 
+  // Protect page
   useEffect(() => {
-    const user = localStorage.getItem("user");
-
-    if (!user) {
-      navigate("/", { replace: true }); // replace prevents back navigation
+    const storedUser = localStorage.getItem("user");
+    if (!storedUser) {
+      navigate("/login", { state: { from: location }, replace: true });
+    } else {
+      setUser(JSON.parse(storedUser));
     }
-  }, [navigate]);
+  }, [navigate, location]);
 
   const logout = () => {
-    localStorage.removeItem("user");   // clear login
-    navigate("/", { replace: true });  // replace history
+    localStorage.removeItem("user");
+    navigate("/login", { replace: true }); // prevents back button to dashboard
   };
+
+  if (!user) return null; // prevent rendering before user is loaded
 
   return (
     <div className="dashboard-root">
+      {/* Sidebar */}
       <div className="dashboard-sidebar">
         <h1>Menu</h1>
         <nav>
@@ -32,10 +41,13 @@ function Dashboard() {
         </button>
       </div>
 
+      {/* Main Content */}
       <div className="dashboard-main">
         <div className="dashboard-content">
           <h1 className="dashboard-header">Dashboard</h1>
-          <p className="dashboard-text">Welcome! You are logged in.</p>
+          <p className="dashboard-text">
+            Welcome, {user.fullName}! You are logged in.
+          </p>
         </div>
       </div>
     </div>

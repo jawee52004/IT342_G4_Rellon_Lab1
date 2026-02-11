@@ -1,14 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import "../components/Login.css";
 
 function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState(""); // changed from fullName
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,13 +25,12 @@ function Login() {
 
     try {
       const response = await api.post("/api/auth/login", {
-        email,           // use email for login
+        email,
         passwordHash: password,
       });
 
-      // Store user info if needed
       localStorage.setItem("user", JSON.stringify(response.data));
-      navigate("/dashboard", { replace: true });
+      navigate("/dashboard", { replace: true }); // prevents back button to login
     } catch (err) {
       setError("Invalid credentials. Please try again.");
       console.error(err);
@@ -35,23 +42,14 @@ function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
-        {/* Header */}
-        <div className="login-header">
-          <h2 className="login-title">Welcome Back</h2>
-          <p className="login-subtitle">
-            Enter your details to sign in to your account
-          </p>
-        </div>
+        <h2 className="login-title">Welcome Back</h2>
+        <p className="login-subtitle">Enter your details to sign in</p>
 
-        {/* Error */}
         {error && <div className="login-error">{error}</div>}
 
-        {/* Form */}
         <form onSubmit={handleLogin}>
           <div className="login-form-group">
-            <label htmlFor="email" className="login-label">
-              Email
-            </label>
+            <label htmlFor="email" className="login-label">Email</label>
             <input
               id="email"
               type="email"
@@ -63,9 +61,7 @@ function Login() {
           </div>
 
           <div className="login-form-group">
-            <label htmlFor="password" className="login-label">
-              Password
-            </label>
+            <label htmlFor="password" className="login-label">Password</label>
             <input
               id="password"
               type="password"
@@ -76,18 +72,16 @@ function Login() {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="login-button"
-          >
+          <button type="submit" disabled={isLoading} className="login-button">
             {isLoading ? "Signing in..." : "Login"}
           </button>
         </form>
 
-        {/* Footer */}
+        {/* Footer link to Register */}
         <div className="login-footer">
-          Don't have an account? <Link to="/register">Register here</Link>
+          <p>
+            Don't have an account? <Link to="/register">Register here</Link>
+          </p>
         </div>
       </div>
     </div>

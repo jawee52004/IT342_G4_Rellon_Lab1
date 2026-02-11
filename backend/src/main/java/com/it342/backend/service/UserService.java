@@ -4,8 +4,6 @@ import com.it342.backend.model.User;
 import com.it342.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserService {
 
@@ -25,8 +23,8 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    // Find user by full name
-    public User getUserByFullName(String fullName) {
-        return userRepository.findByFullName(fullName).orElse(null);
+    // Find user by email
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 }

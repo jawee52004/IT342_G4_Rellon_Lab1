@@ -13,14 +13,14 @@ public class AuthService {
     }
 
     // Register user
-    public void register(String fullName, String password) {
-        User user = new User(fullName, password);
+    public void register(String fullName, String email, String password) {
+        User user = new User(fullName, email, password);
         userService.registerUser(user);
     }
 
-    // Login using full name
-    public boolean login(String fullName, String password) {
-        User user = userService.getUserByFullName(fullName);
+    // Login using email
+    public boolean login(String email, String password) {
+        User user = userService.getUserByEmail(email);
         return user != null && user.getPasswordHash().equals(password);
     }
 
@@ -29,8 +29,8 @@ public class AuthService {
         return userService.getUserById(userId);
     }
 
-    // Get user by full name
-    public User getUserByFullName(String fullName) {
-        return userService.getUserByFullName(fullName);
+    // Get user by email
+    public User getUserByEmail(String email) {
+        return userService.getUserByEmail(email);
     }
 }

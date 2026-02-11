@@ -13,3 +13,9 @@ This project demonstrates a basic user registration, login, dashboard access, an
 - web/ – React frontend
 - mobile/ – Android app 
 - docs/ – System documentation and diagrams
+
+
+How to run
+1. Run Backend "run Backend Application"
+2. Run Frontend "npm start"
+

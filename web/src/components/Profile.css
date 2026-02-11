@@ -1,0 +1,94 @@
+/* Profile.css */
+
+/* Root wrapper */
+.profile-root {
+  display: flex;
+  height: 100vh;
+  background-color: #f3f4f6;
+  font-family: sans-serif;
+}
+
+/* Left sidebar */
+.profile-sidebar {
+  width: 16rem;
+  border-right: 1px solid #111827;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-sidebar h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 2rem;
+}
+
+.profile-sidebar nav a {
+  display: block;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 1rem;
+  text-decoration: none;
+  transition: color 0.2s, text-decoration 0.2s;
+}
+.profile-sidebar nav a:hover {
+  color: #374151;
+  text-decoration: underline;
+}
+
+.profile-sidebar .logout-button {
+  margin-top: auto;
+  width: 100%;
+  padding: 0.5rem 0;
+  background-color: #111827;
+  color: #ffffff;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.profile-sidebar .logout-button:hover {
+  background-color: #1f2937;
+}
+
+/* Main content */
+.profile-main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Profile content inside main */
+.profile-content {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Profile header at top */
+.profile-header {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+/* Profile text */
+.profile-text {
+  font-size: 1.125rem;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+/* Link */
+.profile-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  text-decoration: underline;
+}
+.profile-link:hover {
+  color: #374151;
+}

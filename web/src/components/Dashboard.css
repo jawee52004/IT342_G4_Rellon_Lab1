@@ -1,0 +1,85 @@
+/* Dashboard.css */
+
+/* Root wrapper */
+.dashboard-root {
+  display: flex;
+  height: 100vh;
+  background-color: #f3f4f6; /* light background */
+  font-family: sans-serif;
+}
+
+/* Left sidebar */
+.dashboard-sidebar {
+  width: 16rem; /* 256px */
+  border-right: 1px solid #111827;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidebar title */
+.dashboard-sidebar h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 2rem;
+}
+
+/* Sidebar links */
+.dashboard-sidebar nav a {
+  display: block;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 1rem;
+  text-decoration: none;
+  transition: color 0.2s, text-decoration 0.2s;
+}
+.dashboard-sidebar nav a:hover {
+  color: #374151;
+  text-decoration: underline;
+}
+
+/* Sidebar logout button */
+.dashboard-sidebar .logout-button {
+  margin-top: auto;
+  width: 100%;
+  padding: 0.5rem 0;
+  background-color: #111827;
+  color: #ffffff;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.dashboard-sidebar .logout-button:hover {
+  background-color: #1f2937;
+}
+
+/* Main content area */
+.dashboard-main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Dashboard content */
+.dashboard-content {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Header at top */
+.dashboard-header {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+/* Dashboard text */
+.dashboard-text {
+  font-size: 1.125rem;
+  color: #111827;
+}
